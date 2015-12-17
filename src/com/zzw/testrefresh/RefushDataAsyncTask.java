@@ -1,17 +1,25 @@
 package com.zzw.testrefresh;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.zzw.utils.Contants;
 import com.zzw.utils.DaoRefush;
-import com.zzw.utils.ReadURLUtil;
+import com.zzw.utils.Loader;
+import com.zzw.utils.Loader.OnUpdataProgressListener;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.Log;
+import android.view.View.OnClickListener;
 
 class RefushDataAsyncTask extends AsyncTask<String, Integer, Bitmap> {
 
@@ -32,7 +40,7 @@ class RefushDataAsyncTask extends AsyncTask<String, Integer, Bitmap> {
 	protected void onPreExecute() {
 		mProgressDialog = new ProgressDialog(context);
 		mProgressDialog.setMessage("加载中......");
-		// mProgressDialog.setProgressStyle(mProgressDialog.STYLE_HORIZONTAL);
+		mProgressDialog.setProgressStyle(mProgressDialog.STYLE_HORIZONTAL);
 		mProgressDialog.show();
 	}
 
@@ -40,15 +48,19 @@ class RefushDataAsyncTask extends AsyncTask<String, Integer, Bitmap> {
 	protected Bitmap doInBackground(String... params) {
 		image_url = params[0];
 		addType = params[1];
-		// 进度条参数传递
-		// for (int i = 0; i <= 100; i++) {
-		// publishProgress(i);// 调用onProgressUpdate方法
-		// SystemClock.sleep(30);
-		// }
 
 		try {
+			Loader mLoader = new Loader();
+			mLoader.setOnUpdataProgress(new OnUpdataProgressListener() {
 
-			byte[] b = ReadURLUtil.loadRawDataFromURL(image_url);
+				@Override
+				public void upDataProgress(int count, int total) {
+					publishProgress(count, total);
+				}
+			});
+
+			byte[] b = mLoader.loadRawDataFromURL(image_url);
+
 			Bitmap bmp = BitmapFactory.decodeByteArray(b, 0, b.length);
 
 			HashMap<String, Object> map = new HashMap<String, Object>();
@@ -68,8 +80,10 @@ class RefushDataAsyncTask extends AsyncTask<String, Integer, Bitmap> {
 
 	@Override
 	protected void onProgressUpdate(Integer... values) {
-		// 进度条参数设置
-		// mProgressDialog.setProgress((Integer) values[0]);
+		float count = values[0];
+		float total = values[1];
+		int f = (int) ((count / total) * 100);
+		mProgressDialog.setProgress(f);
 	}
 
 	@Override
@@ -81,5 +95,4 @@ class RefushDataAsyncTask extends AsyncTask<String, Integer, Bitmap> {
 		if (addType.equals(Contants.ADD_BOTTON))
 			mDaoRefush.addBottom(result);
 	}
-
 }

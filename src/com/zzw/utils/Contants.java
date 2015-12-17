@@ -9,4 +9,6 @@ public class Contants {
 	public static final String IMAGE_URL_CACHE_KEY="image_url_cache_key";
 	public static final String IMAGE_BITMAP_CACHE_KEY="image_bitmap_cache_key";
 	
+	
+	
 }

@@ -24,8 +24,8 @@ public class MainActivity extends Activity implements OnScrollListener {
 	private RefushAdapter adapter;
 	private ListView mListView;
 
-	//测试数据
-	private String image_url = "https://ps.ssl.qhimg.com/dr/_110_100/t0116676888d805ad2b.jpg#1450252898#1450252898";
+	// 测试数据
+	private String image_url = "http://www.tukuchina.cn/images/front/v//1c/fc/tukuchina_2034727156.jpg";
 
 	private RefushDataAsyncTask mRefushDataAsyncTask;
 	public DaoRefush mDaoRefush;
@@ -81,7 +81,7 @@ public class MainActivity extends Activity implements OnScrollListener {
 		for (int i = 0; i < cache.size(); i++) {
 			HashMap<String, Object> map = cache.get(i);
 			System.out.println(map);
-			if (url.equals(map.get(Contants.IMAGE_URL_CACHE_KEY)+"")) {
+			if (url.equals(map.get(Contants.IMAGE_URL_CACHE_KEY) + "")) {
 				Log.d("存在缓存", url);
 				Bitmap bmp = (Bitmap) map.get(Contants.IMAGE_BITMAP_CACHE_KEY);
 				if (addtype.equals(Contants.ADD_TOP))
